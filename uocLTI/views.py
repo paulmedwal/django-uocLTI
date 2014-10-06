@@ -55,8 +55,7 @@ def launch_lti(request):
 #    uoc_roles = get_lti_value(settings.LTI_CUSTOM_UOC_ROLES, tool_provider, encoding=encoding)
     user_id = get_lti_value('user_id', tool_provider, encoding=encoding)
     test = get_lti_value('context_title', tool_provider, encoding=encoding)
-    if email == None:
-        email = user_id[:5]+'@edx.org'
+
     if not email or not user_id:
         if settings.LTI_DEBUG: print "Email and/or user_id wasn't found in post, return Permission Denied"
         raise PermissionDenied()    
@@ -87,7 +86,7 @@ def launch_lti(request):
             if settings.LTI_DEBUG: print "User has accepted role for entry, roles: %s" % roles
     
     """ GET OR CREATE NEW USER AND LTI_PROFILE """
-    lti_username = '%s:user_%s' % (request.POST['oauth_consumer_key'], user_id[:5]) #create username with consumer_key and user_id
+    lti_username = request.POST['lis_person_sourcedid']
     try:
         """ Check if user already exists using email, if not create new """    
         user = User.objects.get(email=email)
